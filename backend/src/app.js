@@ -5,7 +5,7 @@ const { createServer } = require("http");
 const { clerkMiddleware, getAuth  } =require("@clerk/express")
 const { clerkClient } = require("@clerk/express");
 const userAuth = require("./middlewares/auth");
-const userRouter = require("./routes/user");
+const userRouter = require("./routes/user.route");
 
 
 
@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(clerkMiddleware({
 
   authorizedParties: [
-    'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:8080',
   ]
