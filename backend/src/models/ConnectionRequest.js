@@ -30,6 +30,18 @@ const connectionRequestSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+connectionRequestSchema.index(
+  { fromUserId: 1, toUserId: 1 },
+  { unique: true }
+);
+
+connectionRequestSchema.pre("save", function (next) {
+  ConnectionRequest.fromUserId = this;
+  // check if it is allow
+  if (ConnectionRequest.fromUserId.equals(ConnectionRequest.toUserId)) {
+    throw new Error("You can not send connections to yourself");
+  }
+});
 
 module.exports = mongoose.model(
   "ConnectionRequest",
