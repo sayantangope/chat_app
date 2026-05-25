@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const messageSchema = mongoose.Schema(
   {
-    chatId: {
+    ConnectionRequestId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Chat",
+      ref: "ConnectionRequest",
     },
 
     senderId: {
