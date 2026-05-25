@@ -1,3 +1,4 @@
+const { clerkClient } = require("@clerk/express");
 const User = require("../models/User");
 const { validateEditProfileData } = require("../utils/validate");
 
@@ -15,14 +16,19 @@ const editProfile = async (req, res) => {
       throw new Error("Some values cant be changed");
     }
 
+    const { clerkId } = req.user;
+
     const allowedFields = ["firstName", "lastName", "username", "profileImage"];
 
+    const params = {};
+
     allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) {
+      if (field in req.body) {
+        params[field] = req.body[field];
         req.user[field] = req.body[field];
       }
     });
-
+    await clerkClient.users.updateUser(clerkId, params);
     await req.user.save();
 
     res.json({
@@ -45,9 +51,9 @@ const searchUsers = async (req, res) => {
     }
 
     const users = await User.find({
-         _id: {
-    $ne: req.user._id
-  },
+      _id: {
+        $ne: req.user._id,
+      },
       $or: [
         {
           username: {
