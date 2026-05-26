@@ -1,13 +1,14 @@
 const express = require("express");
 require("dotenv").config();
 const { connectDb } = require("./config/database");
-const { createServer } = require("http");
+const { createServer, Server } = require("http");
 const { clerkMiddleware, getAuth } = require("@clerk/express");
 const { clerkClient } = require("@clerk/express");
 const userAuth = require("./middlewares/auth");
 const userRouter = require("./routes/user.route");
 const requestRouter = require("./routes/request.route");
 const profileRouter = require("./routes/profile.route");
+const { intialiseSocket } = require("./utils/socket");
 
 const app = express();
 const port = process.env.PORT;
@@ -36,6 +37,7 @@ app.get("/sign-in", (req, res) => {
 });
 
 const server = createServer(app);
+intialiseSocket(server)
 
 connectDb()
   .then(() => {
